@@ -52,8 +52,6 @@ func main() {
 		http.HandleFunc(key, handler)
 	}
 
-	fmt.Println(files)
-
 	port := fmt.Sprintf(":%d", cfg.Port)
 	log.Fatal(http.ListenAndServe(port, nil))
 }
