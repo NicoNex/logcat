@@ -1,0 +1,8 @@
+port = 8080
+
+# You can add as many files as you want.
+[log.myfile]
+path = "path/to/my/file"
+
+[log.myotherfile]
+path = "path/to/my/other/file"
