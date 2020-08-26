@@ -27,7 +27,7 @@ import (
 	"path/filepath"
 )
 
-var files map[string]string
+var files = make(map[string]string)
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	b, err := ioutil.ReadFile(files[r.RequestURI])
@@ -42,8 +42,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	cfg, err := readConfig(filepath.Join(os.Getenv("HOME"), ".logcat"))
 	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	for k, v := range cfg.Logs {
@@ -54,8 +53,4 @@ func main() {
 
 	port := fmt.Sprintf(":%d", cfg.Port)
 	log.Fatal(http.ListenAndServe(port, nil))
-}
-
-func init() {
-	files = make(map[string]string)
 }
