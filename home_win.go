@@ -1,3 +1,5 @@
+// +build windows
+
 /*
  * Logcat - a small utility useful for exposing logs to http requests.
  * Copyright (C) 2020  Nicolò Santamaria
@@ -18,37 +20,6 @@
 
 package main
 
-import (
-	"fmt"
-	"io/ioutil"
-	"log"
-	"net/http"
-	"path/filepath"
-)
+import "os"
 
-var files = make(map[string]string)
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadFile(files[r.RequestURI])
-	if err != nil {
-		fmt.Fprintln(w, err)
-		return
-	}
-	fmt.Fprintln(w, b)
-}
-
-func main() {
-	cfg, err := readConfig(filepath.Join(HOME, ".logcat"))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for k, v := range cfg.Logs {
-		key := fmt.Sprintf("/%s", k)
-		files[key] = v.Path
-		http.HandleFunc(key, handler)
-	}
-
-	port := fmt.Sprintf(":%d", cfg.Port)
-	log.Fatal(http.ListenAndServe(port, nil))
-}
+var HOME = os.Getenv("UserProfile")
