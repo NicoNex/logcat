@@ -25,9 +25,9 @@ import (
 	"path/filepath"
 )
 
-var files = make(map[string]string)
-
 func main() {
+	var files = make(map[string]string)
+
 	cfg, err := readConfig(filepath.Join(HOME, ".logcat"))
 	if err != nil {
 		log.Fatal(err)
