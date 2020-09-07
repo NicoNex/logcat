@@ -25,6 +25,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 var files = make(map[string]string)
@@ -40,7 +41,12 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	cfg, err := readConfig(filepath.Join(os.Getenv("HOME"), ".logcat"))
+	var home = os.Getenv("HOME")
+	if runtime.GOOS == "windows" {
+		home = os.Getenv("UserProfile")
+	}
+
+	cfg, err := readConfig(filepath.Join(home, ".logcat"))
 	if err != nil {
 		log.Fatal(err)
 	}
