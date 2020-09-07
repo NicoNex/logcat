@@ -20,22 +20,12 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"path/filepath"
 )
 
 var files = make(map[string]string)
-
-func handler(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadFile(files[r.RequestURI])
-	if err != nil {
-		fmt.Fprintln(w, err)
-		return
-	}
-	fmt.Fprintln(w, b)
-}
 
 func main() {
 	cfg, err := readConfig(filepath.Join(HOME, ".logcat"))
@@ -46,7 +36,9 @@ func main() {
 	for k, v := range cfg.Logs {
 		key := fmt.Sprintf("/%s", k)
 		files[key] = v.Path
-		http.HandleFunc(key, handler)
+		http.HandleFunc(key, func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, files[r.RequestURI])
+		})
 	}
 
 	port := fmt.Sprintf(":%d", cfg.Port)
